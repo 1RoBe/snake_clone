@@ -2,6 +2,7 @@ import pygame
 import random
 
 class Fruit:
+    # def __init__(self, screen, tile_size: int, min_x: int, max_x: int, min_y: int, max_y: int):
     def __init__(self, screen, tile_size: int, min_x: int, max_x: int, min_y: int, max_y: int):
         self.seed = random.seed
         
@@ -11,10 +12,10 @@ class Fruit:
         self.tile_min_y = 0
         self.tile_max_y = 14
         
-        self.min_x = min_x
-        self.max_x = max_x
-        self.min_y = min_y
-        self.max_y = max_y
+        # self.min_x = min_x
+        # self.max_x = max_x
+        # self.min_y = min_y
+        # self.max_y = max_y
         
         self.width = 16
         self.height = 16

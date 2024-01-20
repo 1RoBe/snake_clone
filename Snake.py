@@ -1,145 +1,84 @@
 import pygame
-from Tail import Tail
 
 class Snake:
     def __init__(self, 
-                 screen,
-                 field_min_x: int = 0,
-                 field_max_x: int = 544,
-                 field_min_y: int = 0,
-                 field_max_y: int = 480,
+                 screen: pygame.surface, 
+                 field_dimension: list[list[int], list[int]] = [[0, 0], [0, 0]],
+                 tile_dimension: list[list[int], list[int]] = [[0, 0], [0, 0]],
+                 tile_size: int = 0,
                  
-                 tile_position: list[int, int] = [0, 0],
-                 tile_min_x: int = 0,
-                 tile_max_x: int = 16,
-                 tile_min_y: int = 0,
-                 tile_max_y: int = 14,
-                 tile_size: int = 32,
-                 
+                #  tile_min_x: int = 0,
+                #  tile_max_x: int = 0,
+                #  tile_min_y: int = 0,
+                #  tile_max_y: int = 0,
+                 tile_position: int = [0, 0],
                  direction: int = 2):
-        
+        #screen
         self.screen = screen
         
-        # tile positions
-        self.tile_position: list[int, int] = tile_position
-        self.old_tile_position: list[int, int] = []
+        # min and max value in x and y of gamefield in px and tile coords
+        self.field_dimension: list[list[int], list[int]] = field_dimension   
+        self.tile_dimension: list[list[int], list[int]] = tile_dimension
+        
+        # tile_size
         self.tile_size: int = tile_size
         
-        # size of game field in px
-        self.field_min_x = field_min_x 
-        self.field_max_x = field_max_x 
-        self.field_min_y = field_min_y
-        self.field_max_y = field_max_y
+        # position in tile coords
+        self.tile_position: list[int] = tile_position
+        self.tile_position_old: list[int] = []
         
-        # size of game field in tiles
-        self.tile_min_x = tile_min_x
-        self.tile_max_x = tile_max_x
-        self.tile_min_y = tile_min_y
-        self.tile_max_y = tile_max_y
-        
-        # pixel positions
-        self.position_x: int = self.tile_position[0] * self.tile_size + self.field_min_x
-        self.position_y: int = self.tile_position[1] * self.tile_size + self.field_min_y
-        
-        # north = 1, east = 2, south = 3, west = 4
+        # direction
         self.direction: int = direction
         
-        # desing of snake
-        self.dimension_x = 32
-        self.dimension_y = 32
+        # position in px for drawing Rect
+        self.position_x: int = self.tile_position[0] * self.tile_size + self.field_dimension[0][0]
+        self.position_y: int = self.tile_position[1] * self.tile_size + self.field_dimension[1][0]
+        
+        # design of drawing
+        self.width = self.tile_size
+        self.height = self.tile_size
+        self.design = pygame.Rect(self.position_x, self.position_y, self.width, self.height)
         self.color: tuple[int, int, int] = (255, 255, 255)
-        self.snake_head = pygame.Rect(self.position_x, self.position_y, self.dimension_x, self.dimension_y)
         
-        # speed
-        self.speed = tile_size
-        # self.segment_list: list[Snake] = [self]
-        
-        # tail
-        self.segment_list: list[Tail] = []
+        # create list of all snake segments and append head
+        self.body: list[Snake] = []
+        self.body.append(self)
     
-    # set direction 
-    def set_direction(self, direction: int) -> None:
-        # check if new direction is not opposite of old direction
-        if abs(direction - self.direction) != 2:
-            self.direction = direction
-        
+    def draw(self) -> None:
+        for segment in self.body:
+            pygame.draw.rect(self.screen, self.color, segment.design)
+        # pygame.draw.rect(self.screen, self.color, self.design)
+            
+    def set_direction(self, direction) -> None:
+        self.direction = direction
+            
     def move_head(self) -> None:
-        if (self.check_wall_collision()):
-            print("COLLISON")
+        # check if head of snake beyond boundaries
+        if self.collision_wall():
+            print("wall collision")
         else:
-            # change tile_position depending on direction
-            # There seems to be a bug when I try to assign self.old_tile_position = self.tile_position
-            # and then change the self.tile_position => both old and new show same coords
-            # BUG FOUND remembered that lists are copied by reference in python
-            self.old_tile_position = self.tile_position[:]
-            
+            # assign old_tile_position before changing tile_position
+            self.tile_position_old = self.tile_position[:]
             match self.direction:
+                # north
                 case 1:
-                    self.snake_head.move_ip((0, - self.speed))
                     self.tile_position[1] -= 1
+                # east
                 case 2:
-                    self.snake_head.move_ip((self.speed, 0))
                     self.tile_position[0] += 1
+                # south
                 case 3:
-                    self.snake_head.move_ip((0, self.speed))
                     self.tile_position[1] += 1
+                # west
                 case 4:
-                    self.snake_head.move_ip((- self.speed, 0))
                     self.tile_position[0] -= 1
-            # print(self.old_tile_position, self.tile_position)
-            
-
-    def draw_head(self) -> None:
-        pygame.draw.rect(self.screen, self.color, self.snake_head)
     
-    def check_wall_collision(self) -> bool:
-        if (self.tile_position[0] < self.tile_min_x or 
-            self.tile_position[0] > self.tile_max_x or 
-            self.tile_position[1] < self.tile_min_y or
-            self.tile_position[1] > self.tile_max_y):
+    def collision_wall(self) -> bool:
+        if (self.tile_position[0] < self.tile_dimension[0][0] or 
+            self.tile_position[0] > self.tile_dimension[0][1] or 
+            self.tile_position[1] < self.tile_dimension[1][0] or 
+            self.tile_position[1] > self.tile_dimension[1][1]):
+            
             return True
-        else:
+        else: 
             return False
-    
-    # def eat_fruit(self, fruit_x, fruit_y):
-    #     if (self.position_x == fruit_x and self.position_y == fruit_y):
-    #         pass
-    
-    def grow(self):
-        # check if tail exists and use snake old tile position or the tail position of last segment
-        if len(self.segment_list) != 0:
-            old_tile_position = self.segment_list[-1].old_tile_position[:]
-            # print(old_tile_position, self.tile_position, self.old_tile_position)
-        else:
-            old_tile_position = self.old_tile_position[:]
-            # print("else", old_tile_position, self.tile_position, self.old_tile_position)
-        
-        # print(old_tile_position, self.tile_position)
-        segment: Tail = Tail(self.screen, self.field_min_x, self.field_min_y, old_tile_position, self.tile_size)
-        self.segment_list.append(segment)
-        for element in self.segment_list:
-            print(element.tile_position)
-            
-        
-    def move(self):
-        if (self.check_wall_collision()):
-            print("COLLISON")
-        if len(self.segment_list) != 0:
-            self.segment_list[0].old_tile_position = self.segment_list[0].tile_position[:]
-            self.segment_list[0].tile_position = self.old_tile_position[:]
-            for index in reversed(range(len(self.segment_list))):
-                if index < 0:
-                    break
-                else:
-                    self.segment_list[index].old_tile_position = self.segment_list[index].tile_position[:]
-                    self.segment_list[index].tile_position = self.segment_list[index - 1].old_tile_position[:]
-            
-
-    # def grow(self):
-    #     segment = Snake(self.screen)
-    #     segment.tile_position = self.segment_list[-1].old_tile_position
-    #     self.segment_list.append(segment)
-    #     for element in self.segment_list:
-    #         print(segment.tile_position, segment.old_tile_position)
-            
-    #     print(len(self.segment_list))
