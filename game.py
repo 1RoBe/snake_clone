@@ -56,7 +56,7 @@ def main():
                 min_y = 0, 
                 max_y = SCREEN_HEIGHT)
 
-    # print(fruit.position_x)
+    print(fruit.position_x)
     
     while running:
         clock.tick(60)
@@ -80,7 +80,7 @@ def main():
         # snake.draw_head()
         snake.draw()
         fruit.draw() 
-        # eat_fruit(snake, fruit)
+        eat_fruit(snake, fruit)
         
         # should probably be look_north, look_east... due to encapsulation instead of using setters
         keys = pygame.key.get_pressed()
@@ -101,11 +101,11 @@ def main():
         # limit fps to 60
     pygame.quit()
 
-# def eat_fruit(snake: Snake, fruit: Fruit):
-#     if (snake.tile_position == fruit.tile_position):
-#         snake.grow()
-#         fruit.new_position()
-#         print("FRUIT COLLISION")
+def eat_fruit(snake: Snake, fruit: Fruit):
+    if (snake.tile_position == fruit.tile_position):
+        # snake.grow()
+        fruit.new_position()
+        print("FRUIT COLLISION")
 
 
         
