@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import time
 from Snake import Snake
+from Tail import Tail
 from Fruit import Fruit
 
 def main():
@@ -27,15 +28,15 @@ def main():
 
     # initialize all imported pygame modules
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen: pygame.surface = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     running = True
     game_over = False
 
     # define snake
 
-    snake_move_timer = 150
-    move_snake_event = pygame.USEREVENT + 1
+    snake_move_timer: int = 150
+    move_snake_event: pygame.USEREVENT = pygame.USEREVENT + 1
     pygame.time.set_timer(move_snake_event, snake_move_timer)
 
 
@@ -71,13 +72,15 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == move_snake_event:
-                # snake.move_head()
-                for element in snake.segment_list:
-                    element.move_head()
+                snake.move_head()
+                snake.move()
+                # for element in snake.segment_list:
+                #     print(element)
 
         screen.fill("red")
-        for segments in snake.segment_list:
-            segments.draw_head()
+        # for segments in snake.segment_list:
+        #     segments.draw_head()
+        snake.draw_head()
         fruit.draw() 
         eat_fruit(snake, fruit)
         
@@ -104,7 +107,8 @@ def eat_fruit(snake: Snake, fruit: Fruit):
         snake.grow()
         fruit.new_position()
         print("FRUIT COLLISION")
-        
+
+
         
 if __name__ == "__main__":
     main()

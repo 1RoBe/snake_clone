@@ -1,4 +1,5 @@
 import pygame
+from Tail import Tail
 
 class Snake:
     def __init__(self, 
@@ -51,7 +52,10 @@ class Snake:
         
         # speed
         self.speed = tile_size
-        self.segment_list: list[Snake] = [self]
+        # self.segment_list: list[Snake] = [self]
+        
+        # tail
+        self.segment_list: list[Tail] = []
     
     # set direction 
     def set_direction(self, direction: int) -> None:
@@ -63,9 +67,12 @@ class Snake:
         if (self.check_wall_collision()):
             print("COLLISON")
         else:
-            self.old_tile_position = self.tile_position
-            # print('old: ', self.old_tile_position)
-            # print(self.snake_head.x, self.snake_head.y)
+            # change tile_position depending on direction
+            # There seems to be a bug when I try to assign self.old_tile_position = self.tile_position
+            # and then change the self.tile_position => both old and new show same coords
+            # BUG FOUND remembered that lists are copied by reference in python
+            self.old_tile_position = self.tile_position[:]
+            
             match self.direction:
                 case 1:
                     self.snake_head.move_ip((0, - self.speed))
@@ -79,7 +86,8 @@ class Snake:
                 case 4:
                     self.snake_head.move_ip((- self.speed, 0))
                     self.tile_position[0] -= 1
-            # print('new: ', self.tile_position)
+            # print(self.old_tile_position, self.tile_position)
+            
 
     def draw_head(self) -> None:
         pygame.draw.rect(self.screen, self.color, self.snake_head)
@@ -98,10 +106,40 @@ class Snake:
     #         pass
     
     def grow(self):
-        segment = Snake(self.screen)
-        segment.tile_position = self.segment_list[-1].old_tile_position
+        # check if tail exists and use snake old tile position or the tail position of last segment
+        if len(self.segment_list) != 0:
+            old_tile_position = self.segment_list[-1].old_tile_position[:]
+            # print(old_tile_position, self.tile_position, self.old_tile_position)
+        else:
+            old_tile_position = self.old_tile_position[:]
+            # print("else", old_tile_position, self.tile_position, self.old_tile_position)
+        
+        # print(old_tile_position, self.tile_position)
+        segment: Tail = Tail(self.screen, self.field_min_x, self.field_min_y, old_tile_position, self.tile_size)
         self.segment_list.append(segment)
         for element in self.segment_list:
-            print(segment.tile_position, segment.old_tile_position)
+            print(element.tile_position)
             
-        print(len(self.segment_list))
+        
+    def move(self):
+        if (self.check_wall_collision()):
+            print("COLLISON")
+        if len(self.segment_list) != 0:
+            self.segment_list[0].old_tile_position = self.segment_list[0].tile_position[:]
+            self.segment_list[0].tile_position = self.old_tile_position[:]
+            for index in reversed(range(len(self.segment_list))):
+                if index < 0:
+                    break
+                else:
+                    self.segment_list[index].old_tile_position = self.segment_list[index].tile_position[:]
+                    self.segment_list[index].tile_position = self.segment_list[index - 1].old_tile_position[:]
+            
+
+    # def grow(self):
+    #     segment = Snake(self.screen)
+    #     segment.tile_position = self.segment_list[-1].old_tile_position
+    #     self.segment_list.append(segment)
+    #     for element in self.segment_list:
+    #         print(segment.tile_position, segment.old_tile_position)
+            
+    #     print(len(self.segment_list))
