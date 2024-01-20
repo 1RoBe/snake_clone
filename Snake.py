@@ -21,6 +21,7 @@ class Snake:
         
         # tile positions
         self.tile_position: list[int, int] = tile_position
+        self.old_tile_position: list[int, int] = []
         self.tile_size: int = tile_size
         
         # size of game field in px
@@ -50,6 +51,7 @@ class Snake:
         
         # speed
         self.speed = tile_size
+        self.segment_list: list[Snake] = [self]
     
     # set direction 
     def set_direction(self, direction: int) -> None:
@@ -61,6 +63,8 @@ class Snake:
         if (self.check_wall_collision()):
             print("COLLISON")
         else:
+            self.old_tile_position = self.tile_position
+            # print('old: ', self.old_tile_position)
             # print(self.snake_head.x, self.snake_head.y)
             match self.direction:
                 case 1:
@@ -75,6 +79,7 @@ class Snake:
                 case 4:
                     self.snake_head.move_ip((- self.speed, 0))
                     self.tile_position[0] -= 1
+            # print('new: ', self.tile_position)
 
     def draw_head(self) -> None:
         pygame.draw.rect(self.screen, self.color, self.snake_head)
@@ -93,4 +98,10 @@ class Snake:
     #         pass
     
     def grow(self):
-        pass
+        segment = Snake(self.screen)
+        segment.tile_position = self.segment_list[-1].old_tile_position
+        self.segment_list.append(segment)
+        for element in self.segment_list:
+            print(segment.tile_position, segment.old_tile_position)
+            
+        print(len(self.segment_list))

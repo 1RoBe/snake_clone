@@ -71,10 +71,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == move_snake_event:
-                snake.move_head()
+                # snake.move_head()
+                for element in snake.segment_list:
+                    element.move_head()
 
         screen.fill("red")
-        snake.draw_head()
+        for segments in snake.segment_list:
+            segments.draw_head()
         fruit.draw() 
         eat_fruit(snake, fruit)
         
@@ -98,7 +101,7 @@ def main():
 
 def eat_fruit(snake: Snake, fruit: Fruit):
     if (snake.tile_position == fruit.tile_position):
-        # snake.grow()
+        snake.grow()
         fruit.new_position()
         print("FRUIT COLLISION")
         
