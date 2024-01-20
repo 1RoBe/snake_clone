@@ -6,11 +6,6 @@ class Snake:
                  field_dimension: list[list[int], list[int]] = [[0, 0], [0, 0]],
                  tile_dimension: list[list[int], list[int]] = [[0, 0], [0, 0]],
                  tile_size: int = 0,
-                 
-                #  tile_min_x: int = 0,
-                #  tile_max_x: int = 0,
-                #  tile_min_y: int = 0,
-                #  tile_max_y: int = 0,
                  tile_position: int = [0, 0],
                  direction: int = 2):
         #screen
@@ -37,17 +32,17 @@ class Snake:
         # design of drawing
         self.width = self.tile_size
         self.height = self.tile_size
-        self.design = pygame.Rect(self.position_x, self.position_y, self.width, self.height)
+        # self.design = pygame.Rect(self.position_x, self.position_y, self.width, self.height)
         self.color: tuple[int, int, int] = (255, 255, 255)
         
         # create list of all snake segments and append head
         self.body: list[Snake] = []
         self.body.append(self)
     
-    def draw(self) -> None:
-        for segment in self.body:
-            pygame.draw.rect(self.screen, self.color, segment.design)
-        # pygame.draw.rect(self.screen, self.color, self.design)
+    # def draw(self) -> None:
+    #     for segment in self.body:
+    #         pygame.draw.rect(self.screen, self.color, segment.design)
+    #     # pygame.draw.rect(self.screen, self.color, self.design)
             
     def set_direction(self, direction) -> None:
         self.direction = direction
@@ -73,11 +68,13 @@ class Snake:
                 case 4:
                     self.tile_position[0] -= 1
     
-    def update_drawing_body(self) -> None:
+    def draw(self) -> None:
         for segment in self.body:
             segment.position_x = segment.tile_position[0] * self.tile_size + self.field_dimension[0][0]
             segment.position_y = segment.tile_position[1] * self.tile_size + self.field_dimension[1][0]
-            segment.design = pygame.Rect(segment.position_x, segment.position_y, segment.width, segment.height)
+            design = pygame.Rect(segment.position_x, segment.position_y, segment.width, segment.height)
+            pygame.draw.rect(self.screen, self.color, design)
+            
     
     def collision_wall(self) -> bool:
         if (self.tile_position[0] < self.tile_dimension[0][0] or 
