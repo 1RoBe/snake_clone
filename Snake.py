@@ -52,7 +52,7 @@ class Snake:
     def set_direction(self, direction) -> None:
         self.direction = direction
             
-    def move_head(self) -> None:
+    def update_tile_head(self) -> None:
         # check if head of snake beyond boundaries
         if self.collision_wall():
             print("wall collision")
@@ -72,6 +72,12 @@ class Snake:
                 # west
                 case 4:
                     self.tile_position[0] -= 1
+    
+    def update_drawing_body(self) -> None:
+        for segment in self.body:
+            segment.position_x = segment.tile_position[0] * self.tile_size + self.field_dimension[0][0]
+            segment.position_y = segment.tile_position[1] * self.tile_size + self.field_dimension[1][0]
+            segment.design = pygame.Rect(segment.position_x, segment.position_y, segment.width, segment.height)
     
     def collision_wall(self) -> bool:
         if (self.tile_position[0] < self.tile_dimension[0][0] or 

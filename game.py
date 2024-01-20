@@ -65,7 +65,9 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == move_snake_event:
-                snake.move_head()
+                snake.update_tile_head()
+                snake.update_drawing_body()
+                snake.draw()
                 for segment in snake.body:
                     print(segment.position_x, segment.position_y)
                 # snake.move()
