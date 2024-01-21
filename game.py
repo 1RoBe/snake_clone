@@ -24,8 +24,8 @@ def main():
     FIELD_DIMENSION: list[list[int], list[int]] = [[FIELD_MIN_X, FIELD_MAX_X], [FIELD_MIN_Y, FIELD_MAX_Y]]
     
 
-    SCREEN_WIDTH = (TILE_MAX_X - 1) * TILE_SIZE
-    SCREEN_HEIGHT = (TILE_MAX_X - 1) * TILE_SIZE
+    SCREEN_WIDTH = FIELD_MIN_X + (TILE_MAX_X + 1) * TILE_SIZE + FIELD_MIN_Y
+    SCREEN_HEIGHT = (TILE_MAX_Y + 1) * TILE_SIZE
 
 
     # initialize all imported pygame modules
@@ -56,7 +56,7 @@ def main():
                 min_y = 0, 
                 max_y = SCREEN_HEIGHT)
 
-    print(fruit.position_x)
+    # print(fruit.position_x)
     
     while running:
         clock.tick(60)
@@ -65,11 +65,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == move_snake_event:
+                
+                
                 snake.update_tile_head()
                 # snake.update_drawing_body()
-                snake.draw()
-                for segment in snake.body:
-                    print(segment.position_x, segment.position_y)
+                # snake.draw()
+                # for segment in snake.body:a
+                    # print(segment.tile_position)
                 # snake.move()
                 # for element in snake.segment_list:
                 #     print(element)
@@ -78,6 +80,7 @@ def main():
         # for segments in snake.segment_list:
         #     segments.draw_head()
         # snake.draw_head()
+        # snake.update_tile_position_body()
         snake.draw()
         fruit.draw() 
         eat_fruit(snake, fruit)
@@ -102,8 +105,8 @@ def main():
     pygame.quit()
 
 def eat_fruit(snake: Snake, fruit: Fruit):
-    if (snake.tile_position == fruit.tile_position):
-        # snake.grow()
+    if (snake.body[0] == fruit.tile_position):
+        snake.grow()
         fruit.new_position()
         print("FRUIT COLLISION")
 
