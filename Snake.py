@@ -1,4 +1,5 @@
 import pygame
+from operator import add
 
 class Snake:
     def __init__(self, 
@@ -60,29 +61,39 @@ class Snake:
             self.tile_position_last_segment = self.body[-1][:]
             old_tile_position_body = self.body[0][:]
             
+            # tile_position buffer, to check if new movement would result in collision to precent right - left, up - down movements
+            new_tile_position_buffer: list[int] = self.body[0][:]
+            
             # since only the head reacting to directions I move self.body[0]
             match self.direction:
                 # north
                 case 1:
-                    self.body[0][1] -= 1
+                    new_tile_position_buffer[1] -= 1
+                    # self.body[0][1] -= 1
                 # east
                 case 2:
-                    self.body[0][0] += 1
+                    new_tile_position_buffer[0] += 1
+                    # self.body[0][0] += 1
                 # south
                 case 3:
-                    self.body[0][1] += 1
+                    new_tile_position_buffer[1] += 1
+                    # self.body[0][1] += 1
                 # west
                 case 4:
-                    self.body[0][0] -= 1
-
-            print(old_tile_position_body, self.body[0])
-            body_len = len(self.body)
-            new_tile_position_body = []
-            for index, _ in enumerate(self.body[:]):
-                if index + 1 < body_len:
-                    new_tile_position_body = self.body[index + 1]
-                    self.body[index + 1] = old_tile_position_body
-                    old_tile_position_body = new_tile_position_body
+                    new_tile_position_buffer[0] -= 1
+                    # self.body[0][0] -= 1
+            if len(self.body) == 1:
+                self.body[0] = new_tile_position_buffer
+            elif self.body[1] != new_tile_position_buffer:
+                self.body[0] = new_tile_position_buffer
+                # print(old_tile_position_body, self.body[0])
+                body_len = len(self.body)
+                new_tile_position_body = []
+                for index, _ in enumerate(self.body[:]):
+                    if index + 1 < body_len:
+                        new_tile_position_body = self.body[index + 1]
+                        self.body[index + 1] = old_tile_position_body
+                        old_tile_position_body = new_tile_position_body
     
     def draw(self) -> None:
         for tile_positon in self.body:

@@ -23,7 +23,8 @@ def main():
     FIELD_MAX_Y = TILE_MAX_Y * TILE_SIZE + FIELD_MIN_Y
     FIELD_DIMENSION: list[list[int], list[int]] = [[FIELD_MIN_X, FIELD_MAX_X], [FIELD_MIN_Y, FIELD_MAX_Y]]
     
-
+    SNAKE_STARTING_POSITION = [int(TILE_MAX_X/2), int(TILE_MAX_Y/2)]
+    
     SCREEN_WIDTH = FIELD_MIN_X + (TILE_MAX_X + 1) * TILE_SIZE + FIELD_MIN_Y
     SCREEN_HEIGHT = (TILE_MAX_Y + 1) * TILE_SIZE
 
@@ -46,7 +47,7 @@ def main():
                   field_dimension = FIELD_DIMENSION,
                   tile_dimension = TILE_DIMENSION,
                   tile_size = TILE_SIZE,
-                  tile_position = [0, 0],
+                  tile_position = SNAKE_STARTING_POSITION,
                   direction = 2)
 
     fruit = Fruit(screen = screen, 
