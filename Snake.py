@@ -75,7 +75,7 @@ class Snake:
                 case 4:
                     self.body[0][0] -= 1
 
-            print(old_tile_position_body, self.body[0])
+            # print(old_tile_position_body, self.body[0])
             body_len = len(self.body)
             new_tile_position_body = []
             for index, _ in enumerate(self.body[:]):
@@ -93,10 +93,10 @@ class Snake:
             
     
     def collision_wall(self) -> bool:
-        # print(self.body)
+        print(self.body, self.tile_dimension)
         if (self.body[0][0] < self.tile_dimension[0][0] or 
-            self.body[0][1] > self.tile_dimension[0][1] or 
-            self.body[0][0] < self.tile_dimension[1][0] or 
+            self.body[0][0] > self.tile_dimension[0][1] or 
+            self.body[0][1] < self.tile_dimension[1][0] or 
             self.body[0][1] > self.tile_dimension[1][1]):
             
             return True
