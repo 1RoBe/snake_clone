@@ -64,8 +64,9 @@ def main():
                 running = False
             if event.type == move_snake_event:
                 
-                
+
                 snake.update_tile_position_body()
+                # snake.draw()
                 # snake.update_drawing_body()
                 # snake.draw()
                 # for segment in snake.body:a

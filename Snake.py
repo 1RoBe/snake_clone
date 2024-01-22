@@ -85,15 +85,47 @@ class Snake:
                     old_tile_position_body = new_tile_position_body
     
     def draw(self) -> None:
-        for tile_positon in self.body:
-            position_x = tile_positon[0] * self.tile_size + self.field_dimension[0][0]
-            position_y = tile_positon[1] * self.tile_size + self.field_dimension[1][0]
+        # don't draw snake segments outside game field
+        # if (self.body[0][0] >= self.tile_dimension[0][0] or 
+        #     self.body[0][0] <= self.tile_dimension[0][1] or
+        #     self.body[0][1] >= self.tile_dimension[1][0] or
+        #     self.body[0][1] <= self.tile_dimension[1][1]):
+        
+        # print(self.body[0][0] > self.tile_dimension[0][0] or 
+        #     self.body[0][0] < self.tile_dimension[0][1] or
+        #     self.body[0][1] > self.tile_dimension[1][0] or
+        #     self.body[0][1] < self.tile_dimension[1][1])
+        # print("draw",not self.collision_wall())
+        #     position_x = self.body[0][0] * self.tile_size + self.field_dimension[0][0]
+        #     position_y = self.body[0][1] * self.tile_size + self.field_dimension[1][0]
+        #     design = pygame.Rect(position_x, position_y, self.width, self.height)
+        #     pygame.draw.rect(self.screen, self.color, design)
+        
+        # don't draw snake segments outside game field
+        if not self.collision_wall():
+            position_x = self.body[0][0] * self.tile_size + self.field_dimension[0][0]
+            position_y = self.body[0][1] * self.tile_size + self.field_dimension[1][0]
             design = pygame.Rect(position_x, position_y, self.width, self.height)
             pygame.draw.rect(self.screen, self.color, design)
+        
+        # iterate through each snake segment other than the head and draw them
+        for tile_position in self.body[1:]:
+            position_x = tile_position[0] * self.tile_size + self.field_dimension[0][0]
+            position_y = tile_position[1] * self.tile_size + self.field_dimension[1][0]
+            design = pygame.Rect(position_x, position_y, self.width, self.height)
+            pygame.draw.rect(self.screen, self.color, design)
+                
+            # # don't draw snake segments outside game field
+            # if (tile_positon[0] < self.tile_dimension[0][0] or 
+            #     tile_positon[0] > self.tile_dimension[0][1] or
+            #     tile_positon[1] > self.tile_dimension[1][0] or
+            #     tile_positon[1] > self.tile_dimension[1][1]):
+                
+            #     pygame.draw.rect(self.screen, self.color, design)
             
     
     def collision_wall(self) -> bool:
-        print(self.body, self.tile_dimension)
+        # print(self.body, self.tile_dimension)
         if (self.body[0][0] < self.tile_dimension[0][0] or 
             self.body[0][0] > self.tile_dimension[0][1] or 
             self.body[0][1] < self.tile_dimension[1][0] or 
@@ -117,5 +149,4 @@ class Snake:
         self.body.append(self.tile_position_last_segment)
         pass
     
-test = []
 
