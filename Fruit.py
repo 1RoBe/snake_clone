@@ -3,7 +3,10 @@ import random
 
 class Fruit:
     # def __init__(self, screen, tile_size: int, min_x: int, max_x: int, min_y: int, max_y: int):
-    def __init__(self, screen, tile_size: int, min_x: int, max_x: int, min_y: int, max_y: int):
+    def __init__(self, 
+                 screen: pygame.surface, 
+                 tile_size: int, 
+                 field_dimension: list[list[int], list[int]] = [[0, 0], [0, 0]]):
         self.seed = random.seed
         
         self.tile_size = tile_size
@@ -12,6 +15,7 @@ class Fruit:
         self.tile_min_y = 0
         self.tile_max_y = 14
         
+        self.field_dimension: list[list[int], list[int]] = field_dimension
         # self.min_x = min_x
         # self.max_x = max_x
         # self.min_y = min_y
@@ -21,8 +25,8 @@ class Fruit:
         self.height = 16
         
         self.tile_position = [random.randrange(self.tile_min_x, self.tile_max_x), random.randrange(self.tile_min_y, self.tile_max_y)]
-        self.position_x = self.tile_position[0] * self.tile_size + (self.tile_size - self.width) / 2
-        self.position_y = self.tile_position[1] * self.tile_size + (self.tile_size - self.width) / 2
+        self.position_x = self.tile_position[0] * self.tile_size + (self.tile_size - self.width) / 2 + self.field_dimension[0][0]
+        self.position_y = self.tile_position[1] * self.tile_size + (self.tile_size - self.width) / 2 + self.field_dimension[1][0]
         
         # self.position_x = int(random.randrange(self.min_x, self.max_x) / self.tile_size) + (self.tile_size - self.width) / 2
         # self.position_y = int(random.randrange(self.min_y, self.max_y) / self.tile_size) + (self.tile_size - self.width) / 2
@@ -42,8 +46,8 @@ class Fruit:
         
     def new_position(self) -> None:
         self.tile_position = [random.randrange(self.tile_min_x, self.tile_max_x), random.randrange(self.tile_min_y, self.tile_max_y)]
-        self.position_x = self.tile_position[0] * self.tile_size + (self.tile_size - self.width) / 2
-        self.position_y = self.tile_position[1] * self.tile_size + (self.tile_size - self.width) / 2
+        self.position_x = self.tile_position[0] * self.tile_size + (self.tile_size - self.width) / 2 + self.field_dimension[0][0]
+        self.position_y = self.tile_position[1] * self.tile_size + (self.tile_size - self.width) / 2 + self.field_dimension[1][0]
         self.design = pygame.Rect(self.position_x, self.position_y, self.width, self.height)
     
 

@@ -49,7 +49,7 @@ class Snake:
         if abs(direction - self.direction) != 2:
             self.direction = direction
             
-    def update_tile_head(self) -> None:
+    def update_tile_position_body(self) -> None:
         # check if head of snake beyond boundaries
         if self.collision_wall():
             print("wall collision")
