@@ -47,7 +47,7 @@ def main():
                   field_dimension = FIELD_DIMENSION,
                   tile_dimension = TILE_DIMENSION,
                   tile_size = TILE_SIZE,
-                  tile_position = [0, 0],
+                  tile_position = [4, 7],
                   direction = 2)
 
     fruit = Fruit(screen = screen, 
