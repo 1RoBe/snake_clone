@@ -17,5 +17,5 @@ class Title(State):
         self.game.draw_text(display, 
                             "Game States Demo", 
                             (0,0,0), 
-                            self.game.GAME_W/2, 
-                            self.game.GAME_H/2 )
+                            self.game.GAME_WIDTH/2, 
+                            self.game.GAME_HEIGHT/2 )

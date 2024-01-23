@@ -5,10 +5,47 @@ from states.title import Title
 class Game():
         def __init__(self):
             pygame.init()
-            self.GAME_W,self.GAME_H = 480, 270
-            self.SCREEN_WIDTH,self.SCREEN_HEIGHT = 960, 540
-            self.game_canvas = pygame.Surface((self.GAME_W,self.GAME_H))
-            self.screen = pygame.display.set_mode((self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            
+            # tiles
+            self.TILE_SIZE: int = 32
+            self.TILES_X: int = 17
+            self.TILES_Y: int = 15
+            # maybe name it Field coords
+            self.TILE_DIMENSION: list[list[int], 
+                                      list[int]] = [[0, self.TILES_X - 1], 
+                                                    [0, self.TILES_X - 1]]
+            # window
+            self.MARGIN_LEFT: int = 20
+            self.MARGIN_RIGHT: int = 20
+            self.MARGIN_TOP: int = 100
+            self.MARGIN_BOTTOM: int = 20
+            
+            # game field
+            self.FIELD_WIDTH: int = self.TILE_SIZE * self.TILES_X
+            self.FIELD_HEIGHT: int = self.TILE_SIZE * self.TILES_Y
+            self.FIELD_DIMENSION: list[list[int], 
+                                       list[int]] = [[self.MARGIN_LEFT,
+                                                      self.MARGIN_LEFT + self.FIELD_WIDTH],
+                                                     [self.MARGIN_TOP,
+                                                      self.MARGIN_TOP + self.FIELD_HEIGHT]]
+            # game dimension
+            self.GAME_WIDTH: int = self.MARGIN_LEFT + self.FIELD_WIDTH + self.MARGIN_RIGHT
+            self.GAME_HEIGHT: int = self.MARGIN_TOP + self.FIELD_HEIGHT + self.MARGIN_BOTTOM
+            
+            # screen dimension
+            self.SCREEN_WIDTH: int = self.GAME_WIDTH
+            self.SCREEN_HEIGHT: int = self.GAME_HEIGHT
+            
+            # set up canvas and screen
+            self.game_canvas = pygame.Surface((self.SCREEN_HEIGHT, self.SCREEN_HEIGHT))
+            self.screen = pygame.display.set_mode((self.SCREEN_HEIGHT, self.SCREEN_HEIGHT))
+            
+            # create timer for choppy snake movemnt
+            self.snake_move_timer: int = 150
+            move_snake_event: pygame.USEREVENT = pygame.USEREVENT + 1
+            pygame.time.set_timer(move_snake_event, self.snake_move_timer)
+            
+            
             self.running, self.playing = True, True
             self.actions = {"left": False, "right": False, "up" : False, "down" : False, "action1" : False, "action2" : False, "start" : False}
             self.dt, self.prev_time = 0, 0
@@ -69,7 +106,8 @@ class Game():
         def render(self):
             self.state_stack[-1].render(self.game_canvas)
             # Render current state to the screen
-            self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
+            # self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
+            self.screen.blit(self.game_canvas, (0,0))
             pygame.display.flip()
 
 
