@@ -8,79 +8,91 @@ class Game():
     def __init__(self):
         pygame.init()
         
-        # # tiles
-        # self.TILE_SIZE: int = 32
-        # self.TILES_X: int = 17
-        # self.TILES_Y: int = 15
-        # # maybe name it Field coords
-        # self.TILE_DIMENSION: list[list[int], 
-        #                             list[int]] = [[0, self.TILES_X - 1], 
-        #                                         [0, self.TILES_X - 1]]
-        # # window
-        # self.MARGIN_LEFT: int = 20
-        # self.MARGIN_RIGHT: int = 20
-        # self.MARGIN_TOP: int = 100
-        # self.MARGIN_BOTTOM: int = 20
-        
-        # # game field
-        # self.FIELD_WIDTH: int = self.TILE_SIZE * self.TILES_X
-        # self.FIELD_HEIGHT: int = self.TILE_SIZE * self.TILES_Y
-        # self.FIELD_DIMENSION: list[list[int], 
-        #                             list[int]] = [[self.MARGIN_LEFT,
-        #                                             self.MARGIN_LEFT + self.FIELD_WIDTH],
-        #                                             [self.MARGIN_TOP,
-        #                                             self.MARGIN_TOP + self.FIELD_HEIGHT]]
-        
         # screen dimension
-        self.SCREEN_WIDTH: int = 584
+        self.SCREEN_WIDTH: int = 584 # 584 for right width
         self.SCREEN_HEIGHT: int = 600
         
-        # set up canvas and screen
-        # self.game_canvas = pygame.Surface((self.SCREEN_HEIGHT, self.SCREEN_HEIGHT))
+        # set up screen surface
         self.screen: pygame.surface = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        
-        # create timer for choppy snake movemnt
-        self.snake_move_timer: int = 150
-        move_snake_event: pygame.USEREVENT = pygame.USEREVENT + 1
-        pygame.time.set_timer(move_snake_event, self.snake_move_timer)
-        
-        self.running, self.playing = True, True
-        self.actions = {"left": False, "right": False, "up" : False, "down" : False, "action1" : False, "action2" : False, "start" : False}
-        self.dt, self.prev_time = 0, 0
         
         # create background
         self.background = Background(self)
         
-        # create game field
+        # create game world
         self.game_world = Game_world(self)
         
-    def game_loop(self):
+        # events
+        self.directions_tile_coordinates: dict = {"north": [0, - 1], "east": [1, 0], "south": [0, 1], "west": [- 1, 0]}
+        self.direction: list[int] = self.directions_tile_coordinates["east"]
+        self.running, self.playing = True, True
+        
+        # create periodic event for snake movement
+        self.snake_move_timer: int = 150
+        self.move_snake_event: pygame.USEREVENT = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.move_snake_event, self.snake_move_timer)
+        
+        # load font
+        self.load_font()
+        
+        self.score = 0
+        
+        
+        
+    def game_loop(self) -> None:
         while self.playing:
+            # get events
             self.get_events()
+            # update
+            self.game_world.snake.update(self.direction)
+            # interactions
+            self.eat_fruit(self.game_world.snake, self.game_world.fruit)
+            # draw 
             self.background.draw_background()
             self.game_world.draw_border()
-
+            self.game_world.snake.draw()
+            self.game_world.fruit.draw()
+            self.draw_text(self.screen, f"Score {self.score}", (255, 255, 255), 70, 20)
             pygame.display.flip()
-            # self.update()
             
-    def get_events(self):
+    def get_events(self) -> None:            
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
-                pygame.quit()
-        #     if event.type == move_snake_event:
-        #         snake.update_tile_position_body()
-        # keys = pygame.key.get_pressed()
-        # if keys[pygame.K_w]:
-        #     snake.set_direction(1)
-        # if keys[pygame.K_d]:
-        #     snake.set_direction(2)
-        # if keys[pygame.K_s]:
-        #     snake.set_direction(3)
-        # if keys[pygame.K_a]:
-        #     snake.set_direction(4)
-        
+                # pygame.quit()
+            # handle snakemovement
+            if event.type == self.move_snake_event:
+                self.game_world.snake.can_move = True
+                
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]:
+            self.direction = self.directions_tile_coordinates["north"]
+        if keys[pygame.K_s]:
+            self.direction = self.directions_tile_coordinates["south"]
+        if keys[pygame.K_d]:
+            self.direction = self.directions_tile_coordinates["east"]
+        if keys[pygame.K_a]:
+            self.direction = self.directions_tile_coordinates["west"]
+
+    def eat_fruit(self, snake, fruit):
+        if (snake.body[0] == fruit.tile_position):
+            snake.grow()
+            fruit.update()
+            self.score += 1
+            print("FRUIT COLLISION")
+
+    def draw_text(self, surface, text, color, x, y):
+        text_surface = self.font.render(text, True, color)
+        #text_surface.set_colorkey((0,0,0))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (x, y)
+        surface.blit(text_surface, text_rect)
+    
+    def load_font(self):
+        # Create pointers to directories 
+        self.font_dir = "fonts"
+        self.font= pygame.font.Font(os.path.join(self.font_dir, "joystix_monospace.otf"), 20)
+
     # def update():
     #     draw_field_border(screen)
     #     snake.draw()
@@ -91,3 +103,6 @@ if __name__ == "__main__":
     g = Game()
     while g.running:
         g.game_loop()
+    
+    
+

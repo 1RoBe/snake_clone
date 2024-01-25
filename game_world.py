@@ -1,5 +1,6 @@
 import pygame
 from snake2 import Snake
+from fruit2 import Fruit
 # from fruit2 import Fruit
 # from game2 import Game
 
@@ -13,7 +14,7 @@ class Game_world:
         self.TILES_X: int = 17
         self.TILES_Y: int = 15
         self.TILE_DIMENSION: list[list[int], list[int]] = [[0, self.TILES_X - 1], 
-                                                           [0, self.TILES_X - 1]]
+                                                           [0, self.TILES_Y - 1]]
         
         # game field
         self.FIELD_WIDTH: int = self.TILE_SIZE * self.TILES_X
@@ -36,6 +37,7 @@ class Game_world:
         
         # create snake and fruit objects
         self.snake = Snake(self.game, self)
+        self.fruit = Fruit(self.game, self)
         
     # draw borders
     def draw_border(self):
