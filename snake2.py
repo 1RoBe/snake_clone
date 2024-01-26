@@ -104,11 +104,11 @@ class Snake:
                 pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_2)
             
         # iterate through each snake segment other than the head and draw them
-        for tile_position in self.body[1:]:
+        for index, tile_position in enumerate(self.body[1:]):
             position_x = tile_position[0] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [0][0]
             position_y = tile_position[1] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [1][0]
             design = pygame.Rect(position_x, position_y, self.width, self.height)
-            pygame.draw.rect(self.game.screen, self.color, design)
+            pygame.draw.rect(self.game.screen, [max(255-230*index/len(self.body), 50), 255-230*index/len(self.body), 255-230*index/len(self.body)], design)
                 
  
 

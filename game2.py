@@ -125,7 +125,7 @@ class Game():
     
     # modified from github.ChristianD37/YoutubeTutorials/game.py
     def draw_text(self, text: str, color: tuple[int], x: int, y: int) -> None:
-        text_surface = self.font.render(text, True, color,)
+        text_surface = self.font.render(text, True, color, (0, 0, 0))
         text_rect = text_surface.get_rect()
         text_rect.x = x
         text_rect.y = y

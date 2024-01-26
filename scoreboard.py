@@ -25,8 +25,9 @@ class Scoreboard:
         # background
         self.game.screen.fill(self.color)
         # score
-        self.game.draw_text(f"Score: {self.game.score}", BLACK, self.game.game_world.MARGIN_LEFT - 2, 7)
-        self.game.draw_text(f"Highscore: {self.game.highscore}", BLACK, self.game.game_world.MARGIN_LEFT + 250, 7)
+        # pygame.draw.rect(self.game.screen, BLACK, (20, 20, 300, 50) )
+        self.game.draw_text(f"Score: {self.game.score}", WHITE, self.game.game_world.MARGIN_LEFT - 2, 7)
+        self.game.draw_text(f"Highscore: {self.game.highscore}", WHITE, self.game.game_world.MARGIN_LEFT + 250, 7)
         # self.game.draw_text(self.game.screen, f"Score: {self.game.score}", (255, 255, 255), self.game.game_world.MARGIN_LEFT - 2, 7)
 
     
