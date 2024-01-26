@@ -32,17 +32,14 @@ class Snake:
         if self.can_move:
             if [a + b for a, b in zip(self.direction, direction)] != [0, 0]:
                 self.direction = direction
-            if self.collision_wall():
-                print("WALL COLLISION")
-            elif self.collision_body():
-                print("BODY COLLISION")
+            if self.collision_wall() or self.collision_body():
+                self.game.playing = False
             else:
                 self.update_tile_position()        
             self.can_move = False
     
     def update_tile_position(self) -> None:
         self.tile_position_last_segment = self.body[-1][:]
-        # old_tile_position_body = self.body[0][:]
         
         # save old positions
         old_tile_positions = self.body[:]
@@ -62,8 +59,7 @@ class Snake:
             self.body[0][1] + self.direction[1] < self.game_world.TILE_DIMENSION[1][0] or 
             self.body[0][1] + self.direction[1] > self.game_world.TILE_DIMENSION[1][1]):
             return True
-        else: 
-            return False
+        return False
         
     def collision_body(self) -> bool:
         for tile_position in self.body[1:]:
@@ -75,6 +71,7 @@ class Snake:
         self.body.append(self.tile_position_last_segment)
         
     def draw(self) -> None:
+        # conversion into pixel coordinates
         position_x = self.body[0][0] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [0][0]
         position_y = self.body[0][1] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [1][0]
         design_head = pygame.Rect(position_x, position_y, self.width, self.height)

@@ -23,7 +23,7 @@ class Game_world:
         # center game_world relative to screen
         self.MARGIN_LEFT: int = (self.game.SCREEN_WIDTH - self.FIELD_WIDTH) / 2
         self.MARGIN_RIGHT: int = (self.game.SCREEN_WIDTH - self.FIELD_WIDTH) / 2
-        self.MARGIN_TOP: int = 100
+        self.MARGIN_TOP: int = 50
         self.MARGIN_BOTTOM: int = 20
         
         # field dimension
@@ -40,7 +40,7 @@ class Game_world:
         self.fruit = Fruit(self.game, self)
         
     # draw borders
-    def draw_border(self):
+    def draw(self):
         
         # create border coords
         border_position_top = (self.MARGIN_LEFT - self.BORDER_WIDTH, 
