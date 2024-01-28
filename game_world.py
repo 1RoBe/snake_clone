@@ -7,7 +7,8 @@ from fruit2 import Fruit
 class Game_world:
     def __init__(self, game):
         self.game = game
-        self.BACKGROUND_COLOR = (255, 0, 0)
+        self.color: dict = {'RED': (255, 0, 0), 'BLACK': (0, 0, 0)}
+        self.BACKGROUND_COLOR = self.color['RED']
         
         # tile data
         self.TILE_SIZE: int = 32
@@ -32,7 +33,7 @@ class Game_world:
                                                             [self.MARGIN_TOP,
                                                              self.MARGIN_TOP + self.FIELD_HEIGHT]]
         # border data
-        self.BORDER_COLOR = (50, 0, 0)
+        self.BORDER_COLOR = self.color['BLACK']
         self.BORDER_WIDTH = 5
         
         # create snake and fruit objects

@@ -19,7 +19,8 @@ class Snake:
         # design of drawing
         self.width: int =  self.game_world.TILE_SIZE 
         self.height: int =  self.game_world.TILE_SIZE 
-        self.color: tuple[int, int, int] = (255, 255, 255)
+        # self.color: tuple[int, int, int] = (255, 255, 255)
+        self.color: dict = {'WHITE': (255, 255, 255), 'BLACK': (0, 0, 0)}
         
         # create list of all snake segments and append head
         self.body = [self.tile_position_start]
@@ -52,8 +53,6 @@ class Snake:
             self.body[index + 1] = old_tile_positions[index]
                 
     def collision_wall(self) -> bool:
-        # print(self.game_world.TILE_DIMENSION[1][1])
-        self.game.test = True
         if (self.body[0][0] + self.direction[0] < self.game_world.TILE_DIMENSION[0][0] or 
             self.body[0][0] + self.direction[0] > self.game_world.TILE_DIMENSION[0][1] or 
             self.body[0][1] + self.direction[1] < self.game_world.TILE_DIMENSION[1][0] or 
@@ -70,47 +69,56 @@ class Snake:
     def grow(self) -> None:
         self.body.append(self.tile_position_last_segment)
         
-    def draw(self) -> None:
-        # conversion into pixel coordinates
-        position_x = self.body[0][0] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [0][0]
-        position_y = self.body[0][1] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [1][0]
-        design_head = pygame.Rect(position_x, position_y, self.width, self.height)
-        pygame.draw.rect(self.game.screen, self.color, design_head)
+    def tile_to_pixel_coordinates(self, tile_x: int, tile_y: int) -> list[int]:
+        position_x: int = tile_x *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [0][0]
+        position_y: int = tile_y *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [1][0]
+        return [position_x, position_y]
         
-        # draw snake face depending on current direction
+    def draw(self) -> None:
+        self.draw_body()
+        self.draw_face()
+            
+    def draw_face(self) -> None:
+        pixel_position: list[int] = self.tile_to_pixel_coordinates(self.body[0][0], self.body[0][1])
+        position_x = pixel_position[0]
+        position_y = pixel_position[1]
+        
         match self.direction:
             case [0, -1]:
                 design_eye_1 = pygame.Rect(position_x + 8, position_y + 32 - 18 - 4, 4, 4)
                 design_eye_2 = pygame.Rect(position_x + + 32-8-4, position_y + 32 - 18 - 4, 4, 4)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_1)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_2)
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_1)
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_2)
                 
             case [1, 0]:
                 design_eye_1 = pygame.Rect(position_x + 18, position_y + 8, 4, 4)
                 design_eye_2 = pygame.Rect(position_x + 18, position_y + 32-8-4, 4, 4)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_1)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_2)
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_1)
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_2)
                 
             case [0, 1]:
                 design_eye_1 = pygame.Rect(position_x + 8, position_y + 18, 4, 4)
                 design_eye_2 = pygame.Rect(position_x + + 32-8-4, position_y + 18, 4, 4)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_1)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_2)
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_1)
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_2)
             
             case [-1, 0]:
                 design_eye_1 = pygame.Rect(position_x + 10, position_y + 8, 4, 4)
                 design_eye_2 = pygame.Rect(position_x + 10, position_y + 32-8-4, 4, 4)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_1)
-                pygame.draw.rect(self.game.screen, (0, 0, 0), design_eye_2)
-            
-        # iterate through each snake segment other than the head and draw them
-        for index, tile_position in enumerate(self.body[1:]):
-            position_x = tile_position[0] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [0][0]
-            position_y = tile_position[1] *  self.game_world.TILE_SIZE  + self.game_world.FIELD_DIMENSION [1][0]
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_1)
+                pygame.draw.rect(self.game.screen, self.color['BLACK'], design_eye_2)
+    
+    def draw_body(self) -> None:
+        for index, tile_position in enumerate(self.body):
+            pixel_position = self.tile_to_pixel_coordinates(tile_position[0], tile_position[1])
+            position_x = pixel_position[0]
+            position_y = pixel_position[1]
             design = pygame.Rect(position_x, position_y, self.width, self.height)
-            pygame.draw.rect(self.game.screen, [max(255-230*index/len(self.body), 50), 255-230*index/len(self.body), 255-230*index/len(self.body)], design)
-                
- 
+            # pygame.draw.rect(self.game.screen, self.color['WHITE'], design)
+            pygame.draw.rect(self.game.screen, [255-5*index, 255-5*index, 255-5*index], design)
+
+            # pygame.draw.rect(self.game.screen, [max(255-230*index/len(self.body), 50), 255-230*index/len(self.body), 255-230*index/len(self.body)], design)
+    
 
     
 

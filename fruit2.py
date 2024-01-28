@@ -9,7 +9,7 @@ class Fruit:
         
         self.seed = random.seed
         self.fruit_eaten: bool = False
-        BLACK: tuple[int, int, int] = (0, 0, 0)
+        self.color: dict = {'BLACK': (0, 0, 0)}
         
         self.width: int = 16
         self.height: int = 16
@@ -17,7 +17,7 @@ class Fruit:
         self.update()
         
         self.design = pygame.Rect(self.position_x, self.position_y, self.width, self.height)
-        self.color: tuple[int, int, int] = BLACK
+        self.color: tuple[int, int, int] = self.color['BLACK']
     
     def update(self) -> None:
         self.tile_position = [random.randrange(self.game_world.TILE_DIMENSION[0][0], self.game_world.TILE_DIMENSION[0][1]), 

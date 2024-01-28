@@ -21,11 +21,11 @@ class Game():
         # create game world
         self.game_world = Game_world(self)
         
-        # events
+        # event states
         self.directions_tile_coordinates: dict = {"north": [0, - 1], "east": [1, 0], "south": [0, 1], "west": [- 1, 0]}
         self.direction: list[int] = self.directions_tile_coordinates["east"]
-        self.actions: dict = {"restart": False}
-        self.running, self.playing = True, True
+        self.actions: dict = {"start": False, "pause": True, "unpause": False, "restart": False}
+        self.running, self.playing = True, False
         # create periodic event for snake movement
         self.snake_move_timer: int = 100
         self.move_snake_event: pygame.USEREVENT = pygame.USEREVENT + 1
@@ -38,8 +38,27 @@ class Game():
         self.score = 0
         self.highscore = self.scoreboard.get_highscore()
         
+        # colors
+        self.color: dict = {'WHITE': (255, 255, 255), 'BLACK': (0, 0, 0), 'RED': (255, 0, 0)}
+        
+    def game_start(self) -> None:
+        self.scoreboard.draw(self.score)
+        self.game_world.draw()
+        self.game_world.snake.draw()
+        self.game_world.fruit.draw()
+        while (self.running and not self.actions['start']):
+            self.get_events()
+            self.draw_test("RETRO SNAKE", self.font_50, self.color['WHITE'], self.color['BLACK'], center = (self.SCREEN_WIDTH/2, self.SCREEN_HEIGHT/4))
+            self.draw_test("by Ron Bellemann", self.font_24, self.color['WHITE'], self.color['BLACK'], center = (self.SCREEN_WIDTH/2, self.SCREEN_HEIGHT/3.05))
+            self.draw_test("to start or pause the game", self.font_24, self.color['BLACK'], self.color['WHITE'], center = (self.SCREEN_WIDTH/2, self.SCREEN_HEIGHT/1.2835))
+            self.draw_test("Press <SPACE>", self.font_24, self.color['BLACK'], self.color['WHITE'], center = (self.SCREEN_WIDTH/2, self.SCREEN_HEIGHT/1.2)) 
+            pygame.display.flip()
+        if self.running:
+            self.playing = True
+        
     def game_loop(self) -> None:
         while self.playing:
+            # print(self.actions['pause'])
             # get events
             self.get_events()
             # update
@@ -51,7 +70,16 @@ class Game():
             self.game_world.draw()
             self.game_world.snake.draw()
             self.game_world.fruit.draw()
+            while self.running and self.actions['pause'] and self.actions['start']:
+                self.get_events()
+                self.draw_test("Press <SPACE> to unpause", 
+                               self.font_24,
+                               self.color['BLACK'], 
+                               self.color['WHITE'], 
+                               center = (self.SCREEN_WIDTH/2, self.SCREEN_HEIGHT/1.1))
+                pygame.display.flip()
             pygame.display.flip()
+
             
     def game_over(self) -> None:
         self.actions['restart'] = False
@@ -71,9 +99,10 @@ class Game():
         self.score = 0
         self.direction = self.directions_tile_coordinates['east']
         # reset snake 
-        self.game_world.snake.__init__(self, self.game_world)
+        # self.game_world.snake.__init__(self, self.game_world)
+        self.game_world = Game_world(self)
         # reset fruit
-        self.game_world.fruit.__init__(self, self.game_world)
+        # self.game_world.fruit.__init__(self, self.game_world)
     
     def get_events(self) -> None:            
         for event in pygame.event.get():
@@ -85,6 +114,9 @@ class Game():
             if event.type == self.move_snake_event:
                 self.game_world.snake.can_move = True
                 
+            # if event.type == pygame.KEYDOWN:
+            #     if event.
+            
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
             self.direction = self.directions_tile_coordinates["north"]
@@ -94,9 +126,23 @@ class Game():
             self.direction = self.directions_tile_coordinates["east"]
         if keys[pygame.K_a]:
             self.direction = self.directions_tile_coordinates["west"]
+        # contains logic for the pause
+        if keys[pygame.K_SPACE]:
+            self.actions['start'] = True
+            if self.playing and self.actions['start']:
+                if self.actions['unpause'] and not self.actions['pause']:
+                    self.actions['pause'] = True
+                if not self.actions['unpause'] and self.actions['pause']:
+                    self.actions['pause'] = False    
+        else:
+            if self.playing and self.actions['start']:
+                if self.actions['pause']:
+                    self.actions['unpause'] = False
+                else:
+                    self.actions['unpause'] = True
         if keys[pygame.K_r]:
             self.actions['restart'] = True
-
+            
     def eat_fruit(self, snake, fruit):
         if (snake.body[0] == fruit.tile_position):
             snake.grow()
@@ -105,27 +151,32 @@ class Game():
             if self.score > self.highscore:
                 self.highscore = self.score
             print("FRUIT COLLISION")
+    
+    def draw_game_start(self):
+        pass
         
     def draw_game_over(self):
         text_rows = ["GAME OVER", f"User Score: {self.score}", f"Highscore: {self.highscore}", "Press <r> to", "restart the game"]
         text_offsets_y = [0, 100, 28, 50, 28] 
-        WHITE: tuple[int] = (255, 255, 255)
-        BLACK: tuple[int] = (0, 0, 0)
-        
-        self.font.size 
+
         for index, text in enumerate(text_rows):
             if index == 0:
-                text_surface = self.font_game_over.render(text, True, WHITE, BLACK)
+                text_surface = self.font_38.render(text, True, self.color["WHITE"], self.color["BLACK"])
             else:
-                text_surface = self.font.render(text, True, WHITE, BLACK)
+                text_surface = self.font_24.render(text, True, self.color["WHITE"], self.color["BLACK"])
 
             text_rect = text_surface.get_rect(center = (self.SCREEN_WIDTH/2, self.SCREEN_HEIGHT/2 + sum(text_offsets_y[:index + 1])))
             # pygame.draw.rect(self.screen, (0, 0, 0), text_rect)
             self.screen.blit(text_surface, text_rect)
-    
-    # modified from github.ChristianD37/YoutubeTutorials/game.py
+            
+    def draw_test(self, text: str, font: pygame.font.Font, color: tuple[int], background_color: tuple[int] = None, **kwargs) -> None:
+        text_surface = font.render(text, True, color, background_color)
+        text_rect = text_surface.get_rect(**kwargs)
+        self.screen.blit(text_surface, text_rect)
+        
+    # https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py
     def draw_text(self, text: str, color: tuple[int], x: int, y: int) -> None:
-        text_surface = self.font.render(text, True, color, (0, 0, 0))
+        text_surface = self.font_24.render(text, True, color, (0, 0, 0))
         text_rect = text_surface.get_rect()
         text_rect.x = x
         text_rect.y = y
@@ -134,12 +185,14 @@ class Game():
     def load_font(self):
         # Create pointers to directories 
         self.font_dir = "fonts"
-        self.font = pygame.font.Font(os.path.join(self.font_dir, "joystix_monospace.otf"), 24)
-        self.font_game_over = pygame.font.Font(os.path.join(self.font_dir, "joystix_monospace.otf"), 38)
-    
+        self.font_24 = pygame.font.Font(os.path.join(self.font_dir, "joystix_monospace.otf"), 24)
+        self.font_38 = pygame.font.Font(os.path.join(self.font_dir, "joystix_monospace.otf"), 38)
+        self.font_50 = pygame.font.Font(os.path.join(self.font_dir, "joystix_monospace.otf"), 50)
+        
 if __name__ == "__main__":
     g = Game()
     while g.running:
+        g.game_start()
         g.game_loop()
         g.game_over()
     pygame.quit()

@@ -4,7 +4,7 @@ import shelve
 class Scoreboard:
     def __init__(self, game):
         self.game = game
-        self.color = (255, 0, 0)
+        self.color: dict = {"BLACK": (0, 0, 0), "WHITE": (255, 255, 255), "RED": (255, 0, 0)}
     
     def get_highscore(self) -> int:
         with shelve.open('highscore') as hs_db:
@@ -17,26 +17,16 @@ class Scoreboard:
     def save_highscore(self):
         with shelve.open('highscore') as hs_db:
             hs_db['highscore'] = self.game.highscore
-        pass
             
     def draw(self, score):
-        WHITE: tuple[int] = (255, 255, 255)
-        BLACK: tuple[int] = (0, 0, 0)
-        # background
-        self.game.screen.fill(self.color)
-        # score
-        # pygame.draw.rect(self.game.screen, BLACK, (20, 20, 300, 50) )
-        self.game.draw_text(f"Score: {self.game.score}", WHITE, self.game.game_world.MARGIN_LEFT - 2, 7)
-        self.game.draw_text(f"Highscore: {self.game.highscore}", WHITE, self.game.game_world.MARGIN_LEFT + 250, 7)
-        # self.game.draw_text(self.game.screen, f"Score: {self.game.score}", (255, 255, 255), self.game.game_world.MARGIN_LEFT - 2, 7)
+        self.game.screen.fill(self.color["RED"])
+        pygame.draw.rect(self.game.screen, self.color['BLACK'], 
+                         (self.game.game_world.MARGIN_LEFT - self.game.game_world.BORDER_WIDTH, 
+                          5, 
+                          self.game.game_world.FIELD_WIDTH + 2 * self.game.game_world.BORDER_WIDTH, 35))
+        self.game.draw_text(f"Score: {self.game.score}", self.color["WHITE"], self.game.game_world.MARGIN_LEFT - 2, 7)
+        self.game.draw_text(f"Highscore: {self.game.highscore}", self.color["WHITE"], self.game.game_world.MARGIN_LEFT + 250, 7)
 
-    
-    # def get_highscore(self) -> int:
-    #     with shelve.open('highscore') as hs_db:
-    #         if hs_db['highscore'] == None:
-    #                 return 0
-    #         else:
-    #             return hs_db['highscore']
 
             
     
