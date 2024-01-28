@@ -1,6 +1,6 @@
 import pygame
-from snake2 import Snake
-from fruit2 import Fruit
+from snake import Snake
+from fruit import Fruit
 # from fruit2 import Fruit
 # from game2 import Game
 
