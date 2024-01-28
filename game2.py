@@ -1,4 +1,5 @@
-import os, time, pygame
+import os
+import pygame
 
 # Load our scenes
 # from states.title import Title
@@ -7,6 +8,15 @@ from scoreboard import Scoreboard
 
 
 class Game:
+    """Initializes game_world and contains the gameloops.
+
+    Longer class information....
+    Longer class information....
+
+    Attributes:
+        likes_spam: A boolean indicating if we like SPAM or not.
+        eggs: An integer count of the eggs we have laid.
+    """
     def __init__(self):
         pygame.init()
 
