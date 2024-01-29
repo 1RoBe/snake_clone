@@ -1,5 +1,3 @@
-#!/C:\Users\Ron\Envs
-
 import os
 import pygame
 from game_world import Game_world
