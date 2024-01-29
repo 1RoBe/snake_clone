@@ -7,6 +7,31 @@ from fruit import Fruit
 
 
 class Game_world:
+    """Defines the parameters for the game world. Initializes snake and fruit object
+
+    Defines the size and position of the game_world and its borders and of the tiles.
+    Initialises the snake and fruit object.
+
+    Attributes:
+        game: game object that defines parameters specific to the screen
+        color: a dict that contains the colors used in the game class
+        TILE_SIZE: constant int defining the tilesize
+        TILES_X: constant int defining number of tiles in x-direction
+        TILES_Y: constant int defining number of tiles in y-direction
+        TILE_DIMENSION: constant list of ints defining the game world dimension in tile coords
+        FIELD_WIDTH: constant int defining width of game world in pixels
+        FIELD_HEIGHT: constant int defining height of game world in pixels
+        MARGIN_LEFT: constant int defining the leftside margin between game world and SCREEN_WIDTH
+        MARGIN_RIGHT: constant int defining the rightside margin between game world and SCREEN_WIDTH
+        MARGIN_TOP: constant int defining the topside margin between game world and SCREEN_HEIGHT
+        MARGIN_BOTTOM: constant int defining the bottomside margin between game world and SCREEN_HEIGHT
+        FIELD_DIMENSION: constant list of ints defining the game world dimension in pixels
+        BORDER_COLOR: constant int defining the color of the border rectangles
+        BORDER_WIDTH: constant int defining the width of the border rectangles
+        snake: Snake object
+        fruit: Fruit object
+    """
+
     def __init__(self, game):
         self.game = game
         self.color: dict = {"RED": (255, 0, 0), "BLACK": (0, 0, 0)}
@@ -45,7 +70,7 @@ class Game_world:
 
     # draw borders
     def draw(self):
-
+        """method to draw the borders"""
         # create border coords
         border_position_top = (
             self.MARGIN_LEFT - self.BORDER_WIDTH,

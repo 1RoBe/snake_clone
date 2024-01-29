@@ -2,12 +2,21 @@ import random
 import pygame
 
 class Fruit:
-    # def __init__(self, screen, tile_size: int, min_x: int, max_x: int, min_y: int, max_y: int):
     def __init__(self, game, game_world):
+        """Class that updates and draws the fruit
+        
+        Initializes and updates the fruit object to a random position. 
+        Draws the fruit object to self.game.screen
+
+        Attributes:
+            game: Game object for screen object and screen dimensions
+            game_world: Game_world object for field dimension and tilesize
+            seed: creates a random seed 
+        """
         self.game = game
         self.game_world = game_world
 
-        self.seed = random.seed
+        random.seed
         self.fruit_eaten: bool = False
         self.color: dict = {"BLACK": (0, 0, 0)}
 
@@ -22,6 +31,7 @@ class Fruit:
         self.color: tuple[int, int, int] = self.color["BLACK"]
 
     def update(self) -> None:
+        """"""
         self.tile_position = [
             random.randrange(
                 self.game_world.TILE_DIMENSION[0][0],

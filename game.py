@@ -1,8 +1,5 @@
 import os
 import pygame
-
-# Load our scenes
-# from states.title import Title
 from game_world import Game_world
 from scoreboard import Scoreboard
 
@@ -10,8 +7,8 @@ from scoreboard import Scoreboard
 class Game:
     """Initializes pygame contains the gameloops.
 
-    Initializes pygame and game_world. Contains the game_start, game_loop and game_over loops
-    to evaluate events and react accordingly
+    Initializes pygame, game_world object and scoreboard object. Contains the game_start, game_loop and game_over loops
+    to evaluate events and react accordingly. Handles the snake fruit interaction.
 
     Attributes:
         SCREEN_WIDTH: a constant int that defines screen width
@@ -116,8 +113,8 @@ class Game:
             self.playing = True
 
     def game_loop(self) -> None:
+        """method for creating the main gameloop and the pause menu"""
         while self.playing:
-            # print(self.actions['pause'])
             # get events
             self.get_events()
             # update
@@ -142,6 +139,7 @@ class Game:
             pygame.display.flip()
 
     def game_over(self) -> None:
+        """method to create and display the gameover menu with the score and highscore"""
         self.actions["restart"] = False
         self.scoreboard.save_highscore()
         while self.running and not self.actions["restart"]:
@@ -160,12 +158,11 @@ class Game:
         self.game_world.snake.reset()
 
     def get_events(self) -> None:
+        """method for getting pygame events e.g. keyboard inputs and the custom snake_move event"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
-
-            # handle snakemovement
             if event.type == self.move_snake_event:
                 self.game_world.snake.can_move = True
 
@@ -196,6 +193,7 @@ class Game:
             self.actions["restart"] = True
 
     def eat_fruit(self, snake, fruit):
+        """method for updating snake, food and scoreboard object in case the snake collides with the fruit"""
         if snake.body[0] == fruit.tile_position:
             snake.grow()
             fruit.update()
@@ -204,6 +202,7 @@ class Game:
                 self.scoreboard.highscore = self.scoreboard.score
 
     def draw_game_over(self):
+        """method for drawing game over menu"""
         self.draw_text(
             "GAME OVER",
             self.font_50,
@@ -248,6 +247,7 @@ class Game:
         background_color: tuple[int] = None,
         **kwargs,
     ) -> None:
+        """method for writing text and blitting it on the screen"""
         text_surface = font.render(text, True, color, background_color)
         text_rect = text_surface.get_rect(**kwargs)
         self.screen.blit(text_surface, text_rect)
