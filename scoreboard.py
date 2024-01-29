@@ -5,6 +5,8 @@ import shelve
 class Scoreboard:
     def __init__(self, game):
         self.game = game
+        self.score: int = 0
+        self.highscore: int = self.get_highscore()
         self.color: dict = {
             "BLACK": (0, 0, 0),
             "WHITE": (255, 255, 255),
@@ -21,9 +23,9 @@ class Scoreboard:
 
     def save_highscore(self):
         with shelve.open("highscore") as hs_db:
-            hs_db["highscore"] = self.game.highscore
+            hs_db["highscore"] = self.highscore
 
-    def draw(self, score):
+    def draw(self):
         self.game.screen.fill(self.color["RED"])
         pygame.draw.rect(
             self.game.screen,
@@ -37,14 +39,25 @@ class Scoreboard:
             ),
         )
         self.game.draw_text(
-            f"Score: {self.game.score}",
+            f"Score: {self.score}",
+            self.game.font_24,
             self.color["WHITE"],
-            self.game.game_world.MARGIN_LEFT - 2,
-            7,
+            topleft = (self.game.game_world.MARGIN_LEFT - 2, 7)
         )
         self.game.draw_text(
-            f"Highscore: {self.game.highscore}",
+            f"Highscore: {self.highscore}",
+            self.game.font_24,
             self.color["WHITE"],
-            self.game.game_world.MARGIN_LEFT + 250,
-            7,
+            topleft = (self.game.game_world.MARGIN_LEFT + 250, 7)
         )
+    def reset_score(self):
+        self.score = 0
+
+
+                # self.draw_text(
+                #     "Press <SPACE> to unpause",
+                #     self.font_24,
+                #     self.color["BLACK"],
+                #     self.color["WHITE"],
+                #     center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 1.1),
+                # )

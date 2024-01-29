@@ -8,18 +8,27 @@ from scoreboard import Scoreboard
 
 
 class Game:
-    """Initializes game_world and contains the gameloops.
+    """Initializes pygame contains the gameloops.
 
-    Longer class information....
-    Longer class information....
+    Initializes pygame and game_world. Contains the game_start, game_loop and game_over loops
+    to evaluate events and react accordingly
 
     Attributes:
-        likes_spam: A boolean indicating if we like SPAM or not.
-        eggs: An integer count of the eggs we have laid.
+        SCREEN_WIDTH: a constant int that defines screen width
+        SCREEN_HEIGHT: a constant int that defines screen height
+        screen: pygame surface that id defined by SCREEN_WITH and SCREEN_HEIGHT
+        scoreboard: initiates Scoreboard class that to retrieve and save the score
+        directions_tile_coordinates: a dict that contains the possible directions in tile coordinates
+        direction: a list containing the direction that is assinged via a keyboard input
+        running: a bool that indicates if the program is running or not
+        playing: a bool that indicates if game is in the game_loop() state
+        snake_move_timer: an int specifying the time interval between move_snake_events
+        move_snake_event: a pygame.USEREVENT creating a custom userevent to move the snake
+        color: a dict that contains the colors used in the game class
     """
+
     def __init__(self):
         pygame.init()
-
         # screen dimension
         self.SCREEN_WIDTH: int = 584  # 584 for right width
         self.SCREEN_HEIGHT: int = 550
@@ -49,7 +58,8 @@ class Game:
             "unpause": False,
             "restart": False,
         }
-        self.running, self.playing = True, False
+        self.running = True
+        self.playing = False
         # create periodic event for snake movement
         self.snake_move_timer: int = 100
         self.move_snake_event: pygame.USEREVENT = pygame.USEREVENT + 1
@@ -57,10 +67,6 @@ class Game:
 
         # load font
         self.load_font()
-
-        # scores
-        self.score = 0
-        self.highscore = self.scoreboard.get_highscore()
 
         # colors
         self.color: dict = {
@@ -70,38 +76,39 @@ class Game:
         }
 
     def game_start(self) -> None:
-        self.scoreboard.draw(self.score)
+        """method to create the starting menu"""
+        self.scoreboard.draw()
         self.game_world.draw()
         self.game_world.snake.draw()
         self.game_world.fruit.draw()
         while self.running and not self.actions["start"]:
             self.get_events()
-            self.draw_test(
+            self.draw_text(
                 "RETRO SNAKE",
                 self.font_50,
                 self.color["WHITE"],
                 self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 4),
             )
-            self.draw_test(
+            self.draw_text(
                 "by Ron Bellemann",
                 self.font_24,
                 self.color["WHITE"],
                 self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 3.05),
             )
-            self.draw_test(
+            self.draw_text(
                 "to start or pause the game",
                 self.font_24,
-                self.color["BLACK"],
                 self.color["WHITE"],
+                self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 1.2835),
             )
-            self.draw_test(
+            self.draw_text(
                 "Press <SPACE>",
                 self.font_24,
-                self.color["BLACK"],
                 self.color["WHITE"],
+                self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 1.2),
             )
             pygame.display.flip()
@@ -118,13 +125,13 @@ class Game:
             # interactions
             self.eat_fruit(self.game_world.snake, self.game_world.fruit)
             # draw
-            self.scoreboard.draw(self.score)
+            self.scoreboard.draw()
             self.game_world.draw()
             self.game_world.snake.draw()
             self.game_world.fruit.draw()
             while self.running and self.actions["pause"] and self.actions["start"]:
                 self.get_events()
-                self.draw_test(
+                self.draw_text(
                     "Press <SPACE> to unpause",
                     self.font_24,
                     self.color["BLACK"],
@@ -140,22 +147,17 @@ class Game:
         while self.running and not self.actions["restart"]:
             self.get_events()
             self.draw_game_over()
-            # self.draw_text(self.screen, "GAME OVER", (255, 255, 255), self.SCREEN_WIDTH/2 - 100, self.SCREEN_HEIGHT/2)
-            # self.draw_text(self.screen, f"Score: {self.score}", (255, 255, 255), self.SCREEN_WIDTH/2 - 100, self.SCREEN_HEIGHT/2 + 30)
             pygame.display.flip()
         self.actions["restart"] = False
         self.new_game()
         self.playing = True
 
     def new_game(self):
-        # reset game
-        self.score = 0
+        """method to reset the game"""
         self.direction = self.directions_tile_coordinates["east"]
-        # reset snake
-        # self.game_world.snake.__init__(self, self.game_world)
-        self.game_world = Game_world(self)
-        # reset fruit
-        # self.game_world.fruit.__init__(self, self.game_world)
+        self.scoreboard.reset_score()
+        self.game_world.fruit.update()
+        self.game_world.snake.reset()
 
     def get_events(self) -> None:
         for event in pygame.event.get():
@@ -166,9 +168,6 @@ class Game:
             # handle snakemovement
             if event.type == self.move_snake_event:
                 self.game_world.snake.can_move = True
-
-            # if event.type == pygame.KEYDOWN:
-            #     if event.
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -200,44 +199,48 @@ class Game:
         if snake.body[0] == fruit.tile_position:
             snake.grow()
             fruit.update()
-            self.score += 1
-            if self.score > self.highscore:
-                self.highscore = self.score
-            print("FRUIT COLLISION")
-
-    def draw_game_start(self):
-        pass
+            self.scoreboard.score += 1
+            if self.scoreboard.score > self.scoreboard.highscore:
+                self.scoreboard.highscore = self.scoreboard.score
 
     def draw_game_over(self):
-        text_rows = [
+        self.draw_text(
             "GAME OVER",
-            f"User Score: {self.score}",
-            f"Highscore: {self.highscore}",
-            "Press <r> to",
-            "restart the game",
-        ]
-        text_offsets_y = [0, 100, 28, 50, 28]
+            self.font_50,
+            self.color["WHITE"],
+            self.color["BLACK"],
+            center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2),
+        )
+        self.draw_text(
+            f"User Score: {self.scoreboard.score}",
+            self.font_24,
+            self.color["WHITE"],
+            self.color["BLACK"],
+            center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 70),
+        )
+        self.draw_text(
+            f"Highscore: {self.scoreboard.highscore}",
+            self.font_24,
+            self.color["WHITE"],
+            self.color["BLACK"],
+            center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 98),
+        )
+        self.draw_text(
+            "To restart the game",
+            self.font_24,
+            self.color["WHITE"],
+            self.color["BLACK"],
+            center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 178),
+        )
+        self.draw_text(
+            "Press <r>",
+            self.font_24,
+            self.color["WHITE"],
+            self.color["BLACK"],
+            center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 206),
+        )
 
-        for index, text in enumerate(text_rows):
-            if index == 0:
-                text_surface = self.font_38.render(
-                    text, True, self.color["WHITE"], self.color["BLACK"]
-                )
-            else:
-                text_surface = self.font_24.render(
-                    text, True, self.color["WHITE"], self.color["BLACK"]
-                )
-
-            text_rect = text_surface.get_rect(
-                center=(
-                    self.SCREEN_WIDTH / 2,
-                    self.SCREEN_HEIGHT / 2 + sum(text_offsets_y[: index + 1]),
-                )
-            )
-            # pygame.draw.rect(self.screen, (0, 0, 0), text_rect)
-            self.screen.blit(text_surface, text_rect)
-
-    def draw_test(
+    def draw_text(
         self,
         text: str,
         font: pygame.font.Font,
@@ -250,14 +253,9 @@ class Game:
         self.screen.blit(text_surface, text_rect)
 
     # https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py
-    def draw_text(self, text: str, color: tuple[int], x: int, y: int) -> None:
-        text_surface = self.font_24.render(text, True, color, (0, 0, 0))
-        text_rect = text_surface.get_rect()
-        text_rect.x = x
-        text_rect.y = y
-        self.screen.blit(text_surface, text_rect)
 
     def load_font(self):
+        """loads fonts at different sizes from directory"""
         # Create pointers to directories
         self.font_dir = "fonts"
         self.font_24 = pygame.font.Font(

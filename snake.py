@@ -150,3 +150,9 @@ class Snake:
             )
 
             # pygame.draw.rect(self.game.screen, [max(255-230*index/len(self.body), 50), 255-230*index/len(self.body), 255-230*index/len(self.body)], design)
+    def reset(self):
+        self.body = [self.tile_position_start]
+        for index in range(1, 3):
+            self.body.append(
+                [self.tile_position_start[0] - index, self.tile_position_start[1]]
+            )   
