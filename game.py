@@ -85,28 +85,28 @@ class Game:
             self.get_events()
             self.draw_text(
                 "RETRO SNAKE",
-                self.font_50,
+                self.font_46,
                 self.color["WHITE"],
                 self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 4),
             )
             self.draw_text(
                 "by Ron Bellemann",
-                self.font_24,
+                self.font_21,
                 self.color["WHITE"],
                 self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 3.05),
             )
             self.draw_text(
                 "to start or pause the game",
-                self.font_24,
+                self.font_21,
                 self.color["WHITE"],
                 self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 1.2835),
             )
             self.draw_text(
                 "Press <SPACE>",
-                self.font_24,
+                self.font_21,
                 self.color["WHITE"],
                 self.color["BLACK"],
                 center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 1.2),
@@ -133,7 +133,7 @@ class Game:
                 self.get_events()
                 self.draw_text(
                     "Press <SPACE> to unpause",
-                    self.font_24,
+                    self.font_21,
                     self.color["BLACK"],
                     self.color["WHITE"],
                     center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 1.1),
@@ -143,14 +143,12 @@ class Game:
 
     def game_over(self) -> None:
         """method to create and display the gameover menu with the score and highscore"""
-        print("Before loop: ", "restart ", self.actions['restart'], "running ", self.running)
         self.actions["restart"] = False
         self.scoreboard.save_highscore()
         while self.running and not self.actions["restart"]:
             self.get_events()
             self.draw_game_over()
             pygame.display.flip()
-        print("after loop: ", "restart ", self.actions['restart'], "running ", self.running)
         self.actions["restart"] = False
         self.new_game()
         self.playing = True
@@ -212,52 +210,39 @@ class Game:
         """method for drawing game_over menu"""
         self.draw_text(
             "GAME OVER",
-            self.font_50,
+            self.font_46,
             self.color["WHITE"],
             self.color["BLACK"],
             center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2),
         )
         self.draw_text(
             f"User Score: {self.scoreboard.score}",
-            self.font_24,
+            self.font_21,
             self.color["WHITE"],
             self.color["BLACK"],
             center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 70),
         )
         self.draw_text(
             f"Highscore: {self.scoreboard.highscore}",
-            self.font_24,
+            self.font_21,
             self.color["WHITE"],
             self.color["BLACK"],
             center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 98),
         )
         self.draw_text(
             "To restart the game",
-            self.font_24,
+            self.font_21,
             self.color["WHITE"],
             self.color["BLACK"],
             center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 178),
         )
         self.draw_text(
             "Press <r>",
-            self.font_24,
+            self.font_21,
             self.color["WHITE"],
             self.color["BLACK"],
             center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 206),
         )
-
-    # def draw_text(
-    #     self,
-    #     text: str,
-    #     font: pygame.font.Font,
-    #     color: tuple[int],
-    #     background_color: tuple[int] = None,
-    #     **kwargs,
-    # ) -> None:
-    #     """method for writing text and blitting it on the screen"""
-    #     text_surface = font.render(text, True, color, background_color)
-    #     text_rect = text_surface.get_rect(**kwargs)
-    #     self.screen.blit(text_surface, text_rect)
     
     def draw_text(
         self,
@@ -279,13 +264,13 @@ class Game:
         """loads fonts at different sizes from directory"""
         # Create pointers to directories
         self.font_dir = "fonts"
-        self.font_24 = pygame.font.Font(
+        self.font_21 = pygame.font.Font(
             os.path.join(self.font_dir, "arcade-legacy.otf"), 21
         )
         self.font_38 = pygame.font.Font(
             os.path.join(self.font_dir, "arcade-legacy.otf"), 38
         )
-        self.font_50 = pygame.font.Font(
+        self.font_46 = pygame.font.Font(
             os.path.join(self.font_dir, "arcade-legacy.otf"), 46
         )
 

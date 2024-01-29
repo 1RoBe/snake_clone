@@ -57,13 +57,13 @@ class Scoreboard:
         )
         self.game.draw_text(
             f"Score: {self.score}",
-            self.game.font_24,
+            self.game.font_21,
             self.color["WHITE"],
             topleft = (self.game.game_world.MARGIN_LEFT, 10)
         )
         self.game.draw_text(
             f"Highscore: {self.highscore}",
-            self.game.font_24,
+            self.game.font_21,
             self.color["WHITE"],
             topleft = (self.game.game_world.MARGIN_LEFT + 250, 10)
         )
