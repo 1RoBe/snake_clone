@@ -1,8 +1,11 @@
+#!/C:\Users\Ron\Envs
+
 import os
 import pygame
 from game_world import Game_world
 from scoreboard import Scoreboard
 
+# the concept of the different game states is inspired by https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py
 
 class Game:
     """Initializes pygame contains the gameloops.
@@ -117,7 +120,7 @@ class Game:
         while self.playing:
             # get events
             self.get_events()
-            # update
+            # update snake position with self.direction
             self.game_world.snake.update(self.direction)
             # interactions
             self.eat_fruit(self.game_world.snake, self.game_world.fruit)
@@ -140,22 +143,26 @@ class Game:
 
     def game_over(self) -> None:
         """method to create and display the gameover menu with the score and highscore"""
+        print("Before loop: ", "restart ", self.actions['restart'], "running ", self.running)
         self.actions["restart"] = False
         self.scoreboard.save_highscore()
         while self.running and not self.actions["restart"]:
             self.get_events()
             self.draw_game_over()
             pygame.display.flip()
+        print("after loop: ", "restart ", self.actions['restart'], "running ", self.running)
         self.actions["restart"] = False
         self.new_game()
         self.playing = True
+        
 
     def new_game(self):
         """method to reset the game"""
         self.direction = self.directions_tile_coordinates["east"]
         self.scoreboard.reset_score()
-        self.game_world.fruit.update()
         self.game_world.snake.reset()
+        self.game_world.fruit.update()
+        
 
     def get_events(self) -> None:
         """method for getting pygame events e.g. keyboard inputs and the custom snake_move event"""
@@ -202,7 +209,7 @@ class Game:
                 self.scoreboard.highscore = self.scoreboard.score
 
     def draw_game_over(self):
-        """method for drawing game over menu"""
+        """method for drawing game_over menu"""
         self.draw_text(
             "GAME OVER",
             self.font_50,
@@ -252,8 +259,6 @@ class Game:
         text_rect = text_surface.get_rect(**kwargs)
         self.screen.blit(text_surface, text_rect)
 
-    # https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py
-
     def load_font(self):
         """loads fonts at different sizes from directory"""
         # Create pointers to directories
@@ -267,7 +272,6 @@ class Game:
         self.font_50 = pygame.font.Font(
             os.path.join(self.font_dir, "joystix_monospace.otf"), 50
         )
-
 
 if __name__ == "__main__":
     g = Game()
