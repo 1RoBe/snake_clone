@@ -275,8 +275,6 @@ class Game:
             pygame.draw.rect(self.screen, background_color, (text_rect.x - 3, text_rect.y - 3, text_rect.width + 6, text_rect.height + 6))
         self.screen.blit(text_surface, text_rect)
 
-
-
     def load_font(self):
         """loads fonts at different sizes from directory"""
         # Create pointers to directories
