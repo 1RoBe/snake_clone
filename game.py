@@ -1,9 +1,11 @@
 import os
 import pygame
+from pygame import freetype
 from game_world import Game_world
 from scoreboard import Scoreboard
 
-# the concept of the different game states is inspired by https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py
+# The concept of the different game states is inspired by https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py
+# This game uses the joystix monospace font, which is free for personal and comercial use
 
 class Game:
     """Initializes pygame contains the gameloops.
@@ -244,6 +246,19 @@ class Game:
             center=(self.SCREEN_WIDTH / 2, self.SCREEN_HEIGHT / 2 + 206),
         )
 
+    # def draw_text(
+    #     self,
+    #     text: str,
+    #     font: pygame.font.Font,
+    #     color: tuple[int],
+    #     background_color: tuple[int] = None,
+    #     **kwargs,
+    # ) -> None:
+    #     """method for writing text and blitting it on the screen"""
+    #     text_surface = font.render(text, True, color, background_color)
+    #     text_rect = text_surface.get_rect(**kwargs)
+    #     self.screen.blit(text_surface, text_rect)
+    
     def draw_text(
         self,
         text: str,
@@ -253,22 +268,27 @@ class Game:
         **kwargs,
     ) -> None:
         """method for writing text and blitting it on the screen"""
-        text_surface = font.render(text, True, color, background_color)
+        text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect(**kwargs)
+        # print(text_rect.x, text_rect.width)
+        if background_color:
+            pygame.draw.rect(self.screen, background_color, (text_rect.x - 3, text_rect.y - 3, text_rect.width + 6, text_rect.height + 6))
         self.screen.blit(text_surface, text_rect)
+
+
 
     def load_font(self):
         """loads fonts at different sizes from directory"""
         # Create pointers to directories
         self.font_dir = "fonts"
         self.font_24 = pygame.font.Font(
-            os.path.join(self.font_dir, "joystix_monospace.otf"), 24
+            os.path.join(self.font_dir, "arcade-legacy.otf"), 21
         )
         self.font_38 = pygame.font.Font(
-            os.path.join(self.font_dir, "joystix_monospace.otf"), 38
+            os.path.join(self.font_dir, "arcade-legacy.otf"), 38
         )
         self.font_50 = pygame.font.Font(
-            os.path.join(self.font_dir, "joystix_monospace.otf"), 50
+            os.path.join(self.font_dir, "arcade-legacy.otf"), 46
         )
 
 if __name__ == "__main__":

@@ -59,13 +59,13 @@ class Scoreboard:
             f"Score: {self.score}",
             self.game.font_24,
             self.color["WHITE"],
-            topleft = (self.game.game_world.MARGIN_LEFT - 2, 7)
+            topleft = (self.game.game_world.MARGIN_LEFT, 10)
         )
         self.game.draw_text(
             f"Highscore: {self.highscore}",
             self.game.font_24,
             self.color["WHITE"],
-            topleft = (self.game.game_world.MARGIN_LEFT + 250, 7)
+            topleft = (self.game.game_world.MARGIN_LEFT + 250, 10)
         )
         
     def reset_score(self):
