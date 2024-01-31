@@ -1,6 +1,5 @@
 import os
 import pygame
-from pygame import freetype
 from game_world import Game_world
 from scoreboard import Scoreboard
 

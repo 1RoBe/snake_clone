@@ -142,7 +142,7 @@ class Snake:
                     position_x + 8, position_y + 32 - 18 - 4, 4, 4
                 )
                 design_eye_2 = pygame.Rect(
-                    position_x + +32 - 8 - 4, position_y + 32 - 18 - 4, 4, 4
+                    position_x + 32 - 8 - 4, position_y + 32 - 18 - 4, 4, 4
                 )
                 pygame.draw.rect(self.game.screen, self.color["BLACK"], design_eye_1)
                 pygame.draw.rect(self.game.screen, self.color["BLACK"], design_eye_2)
