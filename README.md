@@ -1,9 +1,17 @@
 # Retro Snake
 #### Video Demo:  <URL HERE>
+
 #### Abstract
 Retro Snake is based on the game 'Snake' which came presintalled on every Nokia model 6110 in 1998. It features a starting menu, 
 the main game which can be paused at any time and a game over screen. The goal is to collect as many 'black squares' as possible without 
-colliding with the black border or your own body while the movement of the snake is tile based. 
+colliding with the black border or your own body while the movement of the snake is tile based.
+
+#### Installation
+The only requirement for this program is pygame. The required version can be installed via:
+```
+pip install -r requirements.txt
+```
+
 #### Description:
 The pygame module was used to obtain a graphical output as well as handle keyboard since it has a big community, thorough documentation and is ideal for simple 
 2D games.<br>
