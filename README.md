@@ -23,7 +23,7 @@ The `draw` method then renders this object to the screen. The class lacks the `r
 The `game_world.py` file defines the parameters of the playing field, e.g. it's width and height as well as the borders and the margin between screen and playingfield. It also creates the `snake` and `fruit` objects with those parameters to check for border collision and the placement of the fruit. Using the `Game_world` class to define those constants avoid redundancy, a potential update for a later time could include a config file, which defines all those constants in a single place, which would allow modifying those constants without opening the code.<br>
 The `draw` method draws the 4 borders to the screen as rectangles via the `pygame.draw.rect` method.<br>
 <br>
-
+The `scoreboard.py` file includes the `Scoreboard` class which is used to display the scores and to handle saving and loading the highscore to a file.
 
 
 
