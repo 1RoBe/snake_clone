@@ -22,16 +22,13 @@ class Fruit:
         self.game_world = game_world
 
         random.seed
-        self.color: dict = {"BLACK": (0, 0, 0)}
-
+        
         self.width: int = 16
         self.height: int = 16
+        self.color: dict = {"BLACK": (0, 0, 0)}
+        self.design: pygame.Rect = None
 
         self.update()
-
-        self.design = pygame.Rect(
-            self.position_x, self.position_y, self.width, self.height
-        )
 
     def update(self) -> None:
         """method for updating the pixel position of the fruit"""
@@ -46,19 +43,19 @@ class Fruit:
             ),
         ]
 
-        self.position_x = (
+        position_x = (
             self.tile_position[0] * self.game_world.TILE_SIZE
             + (self.game_world.TILE_SIZE - self.width) / 2
             + self.game_world.FIELD_DIMENSION[0][0]
         )
-        self.position_y = (
+        position_y = (
             self.tile_position[1] * self.game_world.TILE_SIZE
             + (self.game_world.TILE_SIZE - self.width) / 2
             + self.game_world.FIELD_DIMENSION[1][0]
         )
 
         self.design = pygame.Rect(
-            self.position_x, self.position_y, self.width, self.height
+            position_x, position_y, self.width, self.height
         )
 
     def draw(self) -> None:
