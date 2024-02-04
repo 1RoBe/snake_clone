@@ -19,8 +19,7 @@ python.exe game.py
 ```
 
 #### Description:
-The pygame module was used to obtain a graphical output as well as handle keyboard since it has a big community, thorough documentation and is ideal for simple 
-2D games.<br>
+The pygame module was used to obtain a graphical output as well as handle keyboard since it has a big community, a thorough documentation and is ideal for simple 2D games.<br>
 The project is composed of five files: `game.py`, `game_world.py`, `scoreboard.py`, `snake.py` and `fruit.py`, each containing a class to achieve sepeartion of concerns and to not repeat certain constants, like `SCREEN_WIDTH`. <br>
 The `snake.py` file contains the `Snake` class, which utilizes attributes and methods from the `Game` and `Game_world` classes. Specifically, it uses `game.screen` to render drawings to the display and `Game_world` to define the dimensions of the playing field and the borders within which the snake can move.<br>
 The snake's movement is tile-based, making it easy to determine collisions with the borders and the fruit object. The snake is made up of a list called 'body', with each entry being a list that contains the x and y positions in tile coordinates for each segment of the snake.
