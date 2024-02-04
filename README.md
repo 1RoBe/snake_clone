@@ -3,13 +3,19 @@
 
 #### Abstract
 Retro Snake is based on the game 'Snake' which came presintalled on every Nokia model 6110 in 1998. It features a starting menu, 
-the main game which can be paused at any time and a game over screen. The goal is to collect as many 'black squares' as possible without 
+the main game which can be paused at any time and a gameover screen. The goal is to collect as many 'black squares' as possible without 
 colliding with the black border or your own body while the movement of the snake is tile based.
 
 #### Installation
 The only requirement for this program is pygame. The required version can be installed via:
 ```
 pip install -r requirements.txt
+```
+
+#### Running the game
+To run the game use the python interpreter on the `game.py` file. For windows:
+```
+python.exe game.py
 ```
 
 #### Description:
@@ -26,26 +32,9 @@ The `draw` method then renders this object to the screen. The class lacks the `r
 <br>
 The `game_world.py` file defines the parameters of the playing field, e.g. it's width and height as well as the borders and the margin between screen and playingfield. It also creates the `snake` and `fruit` objects with those parameters to check for border collision and the placement of the fruit. Using the `Game_world` class to define those constants avoid redundancy, a potential update for a later time could include a config file, which defines all those constants in a single place, which would allow modifying those constants without opening the code. The `draw` method draws the 4 borders to the screen as rectangles via the `pygame.draw.rect` method.<br>
 <br>
-The `scoreboard.py` file includes the `Scoreboard` class which is used to display the scores and to handle saving and loading the highscore to a file. It uses the `font` attribute nad the `draw_text` method of the `Game` class to draw the score onto the display. To save the highscore permanently the python module `Shelve` 
-
-
-
-
-
-If the attribute `can_move` of the snake class is set to true, which is done by a timed userevent in the `Game` class, then 
-
-
-
+The `scoreboard.py` file includes the `Scoreboard` class which is used to display the scores and to handle saving and loading the highscore to a file. It uses the `font` attribute nad the `draw_text` method of the `Game` class to draw the score onto the display. To save the highscore permanently the python module `Shelve` is used, which stores the highscore as a dict permanently in multiple files depending on the operating system, e.g. .dat, .dir, .bak for windows. `get_highscore` returns the highscore stored in one of the data files if such files exist, otherwise returns 0. `save_highscore` opens or creates the highscore files and stores the current highscore in them. The module `Shelve` was used, because it makes creating and updating such files really easy and since the stored filesize is very small, one does not have to worry about performance as of now. The `draw` method essentially renders the score and highscore to the screen using the `game.draw_text` method. Since the score has to be reset after each game over screen, the method `reset_score` does exactly that.<br>
+<br>
 `game.py` defines `SCREEN_WIDTH` and `SCREEN_HEIGHT` and initializes
-pygame. The class also intitializes an instance of the `Scoreboard` and `Game_world` class, to use certain attributes and methods of the `Game` class like the screen dimension, or the `draw_text` method to avoid redundancy. The possible actions a user can do are definded in two dictionaries, `directions_tile_coordinates` and `actions` for easy readibility and in case one wants to add another actions at a later time. The movement of the snake 
-Since the game features menus I used the concept of game states. For a this I took inspiration from the implementation of https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py. To implement it I used multiple loops. The first loop is active as long as the game itself is running, e.g. the user doesn't close the game window
-and runs the `game_start()`, `game_loop()` and `game_over()` methods. 
-
-<!-- 
-```
-int main(void) 
-{
-    code goes here;
-}
-```
-THen we talk about shit -->
+pygame. The class also intitializes an instance of the `Scoreboard` and `Game_world` class, to use certain attributes and methods of the `Game` class like the screen dimension, or the `draw_text` method to avoid redundancy. The possible actions a user can do are definded in two dictionaries, `directions_tile_coordinates` and `actions` for easy readibility and in case one wants to expand the possible actions further at a later time. The colors that were used, are defined in a dictionary, so that game elements will look uniform. Instead of relying on built in fonts, the font "arcade legacy" from “TheWolfBunny” (see: https://fontstruct.com/fontstructors/1258630/thewolfbunny) was used, which is licensed under the SIL Open Font License, Version 1.1. A copy of the license is available in the `font/` directory. The same font was loaded at different sizes to render the menu text at different sizes. For the movement of the snake a user event was defined via `pygame.USEREVENT` that was triggered through `pygame.time.set_timer`. The alternative was to limit the FPS to the movement speed of the snake, but that would limit animations that might be added later.<br>
+To implement the various game menus the concept of game states was used. For a this I took inspiration from the implementation of https://github.com/ChristianD37/YoutubeTutorials/blob/master/Game%20States/game.py. The main idea behind it are multiple loops which represent the different game states. The first loop runs aslong as the `running` attribute is `True`, which stays `True` as long as one does not quit the game. It iterates through the `game_start`, `game_loop` and `game_over` states. The `game_start` state draws the start menu to the screen and contains a loop that remains active as long as the space key is not pressed or the game is closed. Once pressed, the `playing` and `actions["start"]` attributes are set to `True` and the game state changes to the main `game_loop` that remains active as along as the `playing` attribute remains `True`. The `game_loop` state listens for keyboard and user events and updates the snake, fruit and scoreboard objects accordingly and then draws them. Inside the `game_loop` state is a seperate loop which acts as the pause menu. This loop remains active as long three conditions are met: The game hasn't been quit thus `running` is `True`, the game has left the start menu thus `actions["start"]` is `True` and pressing the spacebar results `self.actions["pause"]` state to switch to its opposite boolean value. Because the spacebar starts the game aswell as pauses and unpauses it, the implementation for this behaviour resulted in a complex conditional that takes into consideration if the game left the `game_start` state and is in the `actions["pause"]` state or in the `actions["unpause]` state. If `actions["pause"] == True`, pressing the spacebar turns it into false and sets `actions["unpause"] = True`, the opposite occures for the reversed case. Once one of the losing conditions is met, e.g. the snake collides with the borders or itself, the `playing` attribute changes to `False` and the state switches to the `game_over` state. This state displays ites menu and checks for keyboard input which sets `actions["restart"]` to `True`, saves the new highscore and begins a new game.<br>
+The eat fruit method checks for fruit-snake collisions and runs the `grow` method of the snake object and resets the fruit position. Additionally the score increases by one.

@@ -79,7 +79,6 @@ class Game:
         self.scoreboard.draw()
         self.game_world.draw()
         self.game_world.snake.draw()
-        self.game_world.fruit.draw()
         while self.running and not self.actions["start"]:
             self.get_events()
             self.draw_text(
